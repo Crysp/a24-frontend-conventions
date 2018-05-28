@@ -7,7 +7,7 @@
 * [Типы потомков](#типы-потомков)
 * [Массив как потомок](#массив-как-потомок)
 * [Функция как потомок](#функция-как-потомок)
-* [Функция в render](#функция-в-render)
+* [Рендер-коллбек](#рендер-коллбек)
 * [Проход по потомкам](#проход-по-потомкам)
 * [Перенаправление компонента](#перенаправление-компонента)
 * [Стилизация компонентов](#стилизация-компонентов)
@@ -130,35 +130,32 @@ const FancyDiv = ({ className, ...props }) =>
 
 ## Деструктуризация аргументов
 
-[Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) is an ES2015 feature. It pairs nicely with `props` in Stateless Functions.
+[Деструктурирующее присвоение](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) это фича ES2015. Она отлично сочетается с простыми компонентами.
 
-These examples are equivalent.
+Эти примеры эквивалентны.
 ```js
 const Greeting = props => <div>Hi {props.name}!</div>
 
 const Greeting = ({ name }) => <div>Hi {name}!</div>
 ```
 
-The [rest parameter syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) (`...`) allows you to collect all the remaining properties in a new object.
+Синтаксис [оператора rest](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) (`...`) позволяет собрать все оставшиеся свойства в один объект.
 
 ```js
 const Greeting = ({ name, ...props }) =>
   <div>Hi {name}!</div>
 ```
 
-In turn, this object can use [JSX Spread Attributes](#jsx-spread-attributes) to forward `props` to the composed component.
+Далее, используя [передачу свойств](#передача-свойств), можно прокинуть их дальше.
 
 ```js
 const Greeting = ({ name, ...props }) =>
   <div {...props}>Hi {name}!</div>
 ```
 
-Avoid forwarding non-DOM `props` to composed components. Destructuring makes this very easy because you can create a new `props` object **without** component-specific `props`.
-
-
 ## Условный рендеринг
 
-You can't use regular if/else conditions inside a component definition. [The conditional (ternary) operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) is your friend.
+У вас не получится использовать обычный if/else синтаксис в компонентах. По-этому [тернарный оператор](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/%D0%A3%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B9_%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80) - это ваш выбор.
 
 `if`
 
@@ -172,7 +169,7 @@ You can't use regular if/else conditions inside a component definition. [The con
 {condition || <span>Rendered when `falsey`</span> }
 ```
 
-`if-else` (tidy one-liners)
+`if-else` (однострочные блоки)
 
 ```js
 {condition
@@ -181,7 +178,7 @@ You can't use regular if/else conditions inside a component definition. [The con
 }
 ```
 
-`if-else` (big blocks)
+`if-else` (многострочные блоки)
 
 ```js
 {condition ? (
@@ -198,7 +195,7 @@ You can't use regular if/else conditions inside a component definition. [The con
 
 ## Типы потомков
 
-React can render `children` of many types. In most cases it's either an `array` or a `string`.
+React может рендерить потомков любого типа. В основном это массив или строка.
 
 `string`
 
@@ -216,7 +213,7 @@ React can render `children` of many types. In most cases it's either an `array` 
 </div>
 ```
 
-Functions may be used as children. However, it requires [coordination with the parent component](#render-callback) to be useful.
+Функции могут быть так же использованы как потомки. Однако, нужно [координировать их поведение с родительским компонентом](#функция-в-render).
 
 `function`
 
@@ -229,9 +226,9 @@ Functions may be used as children. However, it requires [coordination with the p
 
 ## Массив как потомок
 
-Providing an array as `children` is a very common. It's how lists are drawn in React.
+Использование массива потомков, это обычный паттерн, например так вы делаете списки в React.
 
-We use `map()` to create an array of React Elements for every value in the array.
+Мы используем map(), чтобы сделать массив элементов React, для каждого значения в массиве.
 
 ```js
 <ul>
@@ -241,7 +238,7 @@ We use `map()` to create an array of React Elements for every value in the array
 </ul>
 ```
 
-That's equivalent to providing a literal `array`.
+Это эквивалентно литералу массива с объектами
 
 ```js
 <ul>
@@ -252,7 +249,7 @@ That's equivalent to providing a literal `array`.
 </ul>
 ```
 
-This pattern can be combined with destructuring, JSX Spread Attributes, and other components, for some serious terseness.
+Такой паттерн может быть использован совместно с деструктуризацией, распределением атрибутов и другими фичами, чтобы упростить написание кода
 
 ```js
 <ul>
@@ -265,29 +262,29 @@ This pattern can be combined with destructuring, JSX Spread Attributes, and othe
 
 ## Функция как потомок
 
-Using a function as `children` isn't inherently useful.
+Использование функции как `children` не является по своей сути полезным.
 
 ```js
 <div>{() => { return "hello world!"}()}</div>
 ```
 
-However, it can be used in component authoring for some serious power. This technique is commonly referred to as `render callbacks`.
+Однако, они могут придать вашим компонентам супер силу, такая техника обычно называется [рендер-коллбэк](#рендер-коллбек).
 
-This is a powerful technique used by libraries like [ReactMotion](https://github.com/chenglou/react-motion). When applied, rendering logic can be kept in the owner component, instead of being delegated.
+Эта мощная техника используется в таких библиотеках как [ReactMotion](https://github.com/chenglou/react-motion). Когда вы применяете ее, логика рендера может управляйся из родительского компонента, вместо того, чтобы полностью передать ее самому компоненту.
 
-See [Render callbacks](#render-callback), for more details.
+Посмотри [Рендер-коллбек](#рендер-коллбек), чтобы узнать подробнее.
 
-## Функция в render
+## Рендер-коллбек
 
-Here's a component that uses a Render callback. It's not useful, but it's an easy illustration to start with.
+Вот пример компонента который использует рендер-коллбэк. Он в целом бесполезен, однако хорошо демонстрирует возможности такого подхода.
 
 ```js
 const Width = ({ children }) => children(500)
 ```
 
-The component calls `children` as a function, with some number of arguments. Here, it's the number `500`.
+Компонент вызывает потомков, как функцию с определенным аргументом. В данном случае это число `500`.
 
-To use this component, we give it a [function as `children`](#function-as-children).
+Чтобы использовать этот компонент мы передаем ему [функцию как потомка](#функция-как-потомок).
 
 ```js
 <Width>
@@ -295,13 +292,13 @@ To use this component, we give it a [function as `children`](#function-as-childr
 </Width>
 ```
 
-We get this output.
+Получим такой результат.
 
 ```js
 <div>window is 500</div>
 ```
 
-With this setup, we can use this `width` to make rendering decisions.
+При таком подходе, можно использовать параметр `width`, для условного рендеринга.
 
 ```js
 <Width>
@@ -313,7 +310,7 @@ With this setup, we can use this `width` to make rendering decisions.
 </Width>
 ```
 
-If we plan to use this condition a lot, we can define another components to encapsulate the reused logic.
+Если планируем использовать такое условие много раз, то мы можем определить другой компонент, чтобы передать ему эту логику.
 
 ```js
 const MinWidth = ({ width: minWidth, children }) =>
@@ -327,7 +324,7 @@ const MinWidth = ({ width: minWidth, children }) =>
 ```
 
 
-Obviously a static `Width` component isn't useful but one that watches the browser window is. Here's a sample implementation.
+Очевидно, что статичный компонент `Width`, не очень полезен, но мы можем наблюдать за размерами окна браузера при таком подходе.
 
 ```js
 class WindowWidth extends React.Component {
@@ -353,7 +350,7 @@ class WindowWidth extends React.Component {
 }
 ```
 
-Many developers favor [Higher Order Components](#higher-order-component) for this type of functionality. It's a matter of preference.
+Многие предпочитают [Higher Order Components](#higher-order-component) (компоненты высшего порядка) для такого типа функционала. Это вопрос личных предпочтений.
 
 
 ## Проход по потомкам
