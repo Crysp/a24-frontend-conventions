@@ -2,6 +2,7 @@
 
 * [Introduction](README.md)
 * [JavaScript Style Guide](javascript-style-guide)
+    * [Запятые](commas.md)
     * [Точка с запятой](semicolons.md)
 * [React](react/README.md)
     * [Паттерны](react/patterns.md)
