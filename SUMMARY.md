@@ -7,6 +7,7 @@
     * [Переводы](javascript-style-guide/i18n.md)
 * [React](react/README.md)
     * [Паттерны](react/patterns.md)
+    * [Декораторы](react/decorators.md)
 * [Monorepo](monorepo/README.md)
 * [FDK](fdk/README.md)
 * [Пакетный менеджер](package-registry/README.md)
