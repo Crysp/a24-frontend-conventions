@@ -1,6 +1,7 @@
 # Содержание
 
 * [Introduction](README.md)
+* [Архитектура проекта](project-structure/README.md)
 * [React](react/README.md)
     * [Паттерны](react/patterns.md)
 * [Monorepo](monorepo/README.md)
