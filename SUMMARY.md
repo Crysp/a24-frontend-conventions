@@ -13,3 +13,4 @@
 * [FDK](fdk/README.md)
 * [Пакетный менеджер](package-registry/README.md)
 * [Тестирование](specs/README.md)
+* [GIT](vcs/readme.md)
