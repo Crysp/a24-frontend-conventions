@@ -5,6 +5,7 @@
 * [Класс]()
 * [Стили]()
 * [HOC-data]()
+* [GraphQL запросы]()
 * [Проектирование компонента]()
 
 ## Структура
@@ -21,6 +22,9 @@
 │   │   └── index.js  # Содержит экспорты всех хелперов
 │   ├── data
 │   │   └── index.js  # HOC-data компонент, который прокидывает в AwesomeComponent данные из внешних и внутренних API 
+│   ├── schemas
+│   │   ├── ...
+│   │   └── index.js  # Содержит экспорты всех запросов
 │   ├── index.js      # Главный файл
 │   └── styled.js     # Стили
 └── ...
@@ -187,6 +191,37 @@ class AwesomeComponent extends React.Component {
 
 ```js
 export const getCurrentDate = () => { /* ... */ };
+```
+
+## GraphQL запросы
+
+```
+.
+├── ...
+├── schemas
+│    ├── getData.graphql
+│    └── index.js
+└── ...
+```
+
+**Очень важен** формат экспорта в `index.js`. Название переменной в которой лежит запрос **должно** совпадать с названием файла (вплоть до регистра).
+
+`index.js`
+
+```js
+export getData from './getData.graphql';
+```
+
+Потому что мы используем плагин [babel-plugin-import](https://github.com/ant-design/babel-plugin-import), который подменяет во время сборки путь импорта схемы.
+
+`Component/data/index.jsx`
+
+```js
+import { getData } from '../schemas';
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import getData from '../schemas/getData.graphql';
 ```
 
 ## Проектирование компонента
